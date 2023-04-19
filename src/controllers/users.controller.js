@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user.model');
+const { use } = require('../routes/home.routes');
 
 const getAllUsers = async (req, res, next) => {
     try{
@@ -13,18 +14,19 @@ const getAllUsers = async (req, res, next) => {
 
 const createUser = async (req, res, next)=>{
     try{
-        const {username, name, password} = req.body;
+        const { username, name, password } = req.body;
         const encryptedPassword = await bcrypt.hash(password,10);
 
         const newUser = new User({
             username: username.toLowerCase(),
             name,
-            password: encryptedPassword
+            password: encryptedPassword,        
         });
 
         const insertedUser = await newUser.save();
         const returnUser = insertedUser.toObject();
         delete returnUser.password;
+        
         return res.status(201).json(returnUser);
     }catch(error){
         return next(error);

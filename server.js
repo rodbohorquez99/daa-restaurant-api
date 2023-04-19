@@ -7,6 +7,8 @@ const homeRoutes = require('./src/routes/home.routes');
 const reservationsRoutes = require('./src/routes/reservations.routes');
 const usersRoutes = require('./src/routes/users.routes');
 
+const firstUserUtils = require('./src/utils/first-user-utils');
+
 const app = express();
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended:true }));
@@ -18,6 +20,7 @@ app.use('/users', usersRoutes);
 const main = async () => {
     try{
         await mongoose.connect(process.env.DB_URL);
+        await firstUserUtils.createFirstUser();
         app.listen(process.env.PORT, () => console.log('Server listening at port ' +process.env.PORT));
 
     } catch(error){
